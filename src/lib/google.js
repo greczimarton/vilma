@@ -167,7 +167,8 @@ export const processEvent = async (
       `${config.vilmaPath}/emails/cancel.ejs`,
       config.organizersEmail,
       undefined,
-      config.admin
+      config.admin,
+      undefined
     );
     console.log("Cancel email sent to BME.");
 
@@ -177,7 +178,8 @@ export const processEvent = async (
       `${config.vilmaPath}/emails/cancel-players.ejs`,
       config.testTo,
       undefined,
-      config.admin //acceptedAttendees.map((attendee) => attendee.email).join(",")
+      config.admin, //acceptedAttendees.map((attendee) => attendee.email).join(","),
+      undefined
     );
 
     calendar.events.delete({
@@ -204,7 +206,10 @@ export const processEvent = async (
       gmail,
       event,
       `${config.vilmaPath}/emails/player-report.ejs`,
-      config.admin
+      config.admin,
+      undefined,
+      undefined,
+      acceptedAttendees.map((attendee) => attendee.email)
     );
     console.log("Emails logged.");
 
@@ -215,7 +220,8 @@ export const processEvent = async (
       `${config.vilmaPath}/emails/confirm.ejs`,
       config.testTo,
       undefined,
-      undefined //acceptedAttendees.map((attendee) => attendee.email).join(",")
+      undefined, //acceptedAttendees.map((attendee) => attendee.email).join(",")
+      undefined
     );
     console.log("Confirmation email sent to players.");
   }
@@ -230,9 +236,18 @@ export const processEvent = async (
  * @param {string} to
  * @param {string|undefined} [vote_end = undefined] vote_end
  * @param {string|undefined} [bcc = undefined] bcc
+ * @param {string[]|undefined} players
  * @return {Promise<void>}
  */
-const sendEmail = async (gmail, event, templatePath, to, vote_end, bcc) => {
+const sendEmail = async (
+  gmail,
+  event,
+  templatePath,
+  to,
+  vote_end,
+  bcc,
+  players
+) => {
   const emailTemplate = fs.readFileSync(templatePath, {
     encoding: "utf-8",
   });
@@ -245,7 +260,7 @@ const sendEmail = async (gmail, event, templatePath, to, vote_end, bcc) => {
     day_of_week: new Date(event.start.dateTime).toLocaleDateString("hu-HU", {
       weekday: "long",
     }),
-    players: event.attendees.map((attendee) => attendee.email).join("<br>"),
+    players: players.join("\\n"),
     send_bcc: bcc,
     vote_end: vote_end,
   });
