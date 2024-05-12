@@ -198,6 +198,7 @@ export const processEvent = async (
       acceptedAttendees,
       event
     );
+
     sendEmail(
       gmail,
       event,
@@ -205,11 +206,11 @@ export const processEvent = async (
       config.admin,
       undefined,
       undefined,
-      acceptedAttendees.map((attendee) => attendee.email)
+      acceptedAttendees
     );
     console.log("Emails logged.");
 
-    console.log("Sending confirmation emails...");
+    console.log("Sending confirmation emails... ");
     await sendEmail(
       gmail,
       event,
@@ -232,7 +233,7 @@ export const processEvent = async (
  * @param {string} to
  * @param {string|undefined} [vote_end = undefined] vote_end
  * @param {string|undefined} [bcc = undefined] bcc
- * @param {string[]|undefined} players
+ * @param {string[]|undefined} [players = undefined] players
  * @return {Promise<void>}
  */
 const sendEmail = async (
@@ -248,7 +249,7 @@ const sendEmail = async (
     encoding: "utf-8",
   });
 
-  const email1 = await ejs.render(emailTemplate, {
+  const email = await ejs.render(emailTemplate, {
     send_to: to,
     date: event.start.dateTime.split("T")[0],
     from: isoDateToHour(event.start.dateTime),
@@ -256,12 +257,14 @@ const sendEmail = async (
     day_of_week: new Date(event.start.dateTime).toLocaleDateString("hu-HU", {
       weekday: "long",
     }),
-    players: players.join("\\n"),
+    players: players,
     send_bcc: bcc,
     vote_end: vote_end,
   });
 
-  const base64Email = Buffer.from(email1).toString("base64");
+  console.log("email", email);
+
+  const base64Email = Buffer.from(email).toString("base64");
 
   try {
     await gmail.users.messages.send({
