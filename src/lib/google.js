@@ -218,7 +218,7 @@ export const processEvent = async (config, event, gmail, isReminder) => {
  * @param {string} templatePath
  * @param {string} to
  * @param {string|undefined} [vote_end = undefined] vote_end
- * @param {string} bcc
+ * @param {string|undefined} [bcc = undefined] bcc
  * @return {Promise<void>}
  */
 const sendEmail = async (gmail, event, templatePath, to, vote_end, bcc) => {
