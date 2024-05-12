@@ -123,7 +123,13 @@ export const getEventById = async (calendar, eventId) => {
  * @param {boolean} [isReminder = false] isReminder
  * @return {void}
  */
-export const processEvent = async (config, event, gmail, calendar) => {
+export const processEvent = async (
+  config,
+  event,
+  gmail,
+  calendar,
+  isReminder
+) => {
   console.log(`Event found: ${event.summary}`);
 
   if (isReminder) {

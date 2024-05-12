@@ -155,8 +155,6 @@ const main = async (args) => {
     return;
   }
 
-  console.log(config.scopes);
-
   switch (args[2]) {
     case Commands.Auth:
       await runAuth(config);
