@@ -135,6 +135,14 @@ export const processEvent = async (
   if (isReminder) {
     console.log("Sending reminder email...");
 
+    const awaitingResponseAttendeesEmail = event.attendees
+      .filter(
+        (attendee) =>
+          attendee.responseStatus === "needsAction" ||
+          attendee.responseStatus === "tentative"
+      )
+      .map((attendee) => attendee.email);
+
     // gmail returns time in utc instead of local time which is 2 hours behind so no decrement is needed :D
     const time = new Date(event.start.dateTime);
 
@@ -142,8 +150,12 @@ export const processEvent = async (
       gmail,
       event,
       `${config.vilmaPath}/emails/reminder.ejs`,
-      config.testTo, //acceptedAttendees.filter((attendee) => attendee.responseStatus === "needsAction" || attendee.responseStatus === "tentative").map((attendee) => attendee.email).join(",")
-      isoDateToHour(time.toISOString())
+      config.testTo,
+      isoDateToHour(time.toISOString()),
+      config.dryRun
+        ? config.testTo
+        : [...awaitingResponseAttendeesEmail, config.admin],
+      undefined
     );
 
     return;
@@ -151,6 +163,10 @@ export const processEvent = async (
 
   const acceptedAttendees = event.attendees.filter(
     (attendee) => attendee.responseStatus === "accepted"
+  );
+
+  const acceptedAttendeesEmail = acceptedAttendees.map(
+    (attendee) => attendee.email
   );
 
   console.log(`Number of accepted attendees: ${acceptedAttendees.length}`);
@@ -174,7 +190,7 @@ export const processEvent = async (
       `${config.vilmaPath}/emails/cancel-players.ejs`,
       config.testTo,
       undefined,
-      config.admin, //acceptedAttendees.map((attendee) => attendee.email).join(","),
+      config.dryRun ? config.admin : [...acceptedAttendeesEmail, config.admin],
       undefined
     );
 
@@ -188,14 +204,10 @@ export const processEvent = async (
   } else {
     console.log("Enough players.");
 
-    const acceptedAttendees = event.attendees
-      .filter((attendee) => attendee.responseStatus === "accepted")
-      .map((attendee) => attendee.email);
-
     console.log("Logging emails of players who accepted the invitation");
     saveAcceptedAttendees(
       `${config.vilmaPath}/player-logs`,
-      acceptedAttendees,
+      acceptedAttendeesEmail.map((attendee) => attendee.email),
       event
     );
 
@@ -206,7 +218,7 @@ export const processEvent = async (
       config.admin,
       undefined,
       undefined,
-      acceptedAttendees
+      acceptedAttendeesEmail
     );
     console.log("Emails logged.");
 
@@ -217,7 +229,7 @@ export const processEvent = async (
       `${config.vilmaPath}/emails/confirm.ejs`,
       config.testTo,
       undefined,
-      undefined, //acceptedAttendees.map((attendee) => attendee.email).join(",")
+      config.dryRun ? config.testTo : acceptedAttendeesEmail,
       undefined
     );
     console.log("Confirmation email sent to players.");
