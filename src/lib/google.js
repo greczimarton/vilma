@@ -139,9 +139,7 @@ export const processEvent = async (config, event, gmail, isReminder) => {
       gmail,
       event,
       `${config.vilmaPath}/emails/reminder.ejs`,
-      config.sendFrom,
-      "g.marci1999@gmail.com",
-      //acceptedAttendees.filter((attendee) => attendee.responseStatus === "needsAction" || attendee.responseStatus === "tentative").map((attendee) => attendee.email).join(",")
+      config.testTo, //acceptedAttendees.filter((attendee) => attendee.responseStatus === "needsAction" || attendee.responseStatus === "tentative").map((attendee) => attendee.email).join(",")
       isoDateToHour(time.toISOString())
     );
 
@@ -160,8 +158,9 @@ export const processEvent = async (config, event, gmail, isReminder) => {
       gmail,
       event,
       `${config.vilmaPath}/emails/cancel.ejs`,
-      config.sendFrom,
-      config.organizersEmail
+      config.organizersEmail,
+      undefined,
+      config.admin
     );
     console.log("Cancel email sent to BME.");
 
@@ -169,9 +168,13 @@ export const processEvent = async (config, event, gmail, isReminder) => {
       gmail,
       event,
       `${config.vilmaPath}/emails/cancel-players.ejs`,
-      config.sendFrom,
-      "g.marci1999@gmail.com" //acceptedAttendees.map((attendee) => attendee.email).join(",")
+      config.testTo, //acceptedAttendees.map((attendee) => attendee.email).join(",")
+      undefined,
+      config.admin
     );
+
+    // törlés a naptárból notification nélkül
+
     console.log("Cancel emails sent.");
   } else {
     console.log("Enough players.");
@@ -186,6 +189,12 @@ export const processEvent = async (config, event, gmail, isReminder) => {
       acceptedAttendees,
       event
     );
+    sendEmail(
+      gmail,
+      event,
+      `${config.vilmaPath}/emails/player-report.ejs`,
+      config.admin
+    );
     console.log("Emails logged.");
 
     console.log("Sending confirmation emails...");
@@ -193,8 +202,9 @@ export const processEvent = async (config, event, gmail, isReminder) => {
       gmail,
       event,
       `${config.vilmaPath}/emails/confirm.ejs`,
-      config.sendFrom,
-      "g.marci1999@gmail.com" //acceptedAttendees.map((attendee) => attendee.email).join(",")
+      config.testTo, //acceptedAttendees.map((attendee) => attendee.email).join(",")
+      undefined,
+      config.admin
     );
     console.log("Confirmation email sent to players.");
   }
@@ -206,18 +216,17 @@ export const processEvent = async (config, event, gmail, isReminder) => {
  * @param {gmail_v1.Gmail} gmail
  * @param {calendar_v3.Schema$Event} event
  * @param {string} templatePath
- * @param {string} from
  * @param {string} to
  * @param {string|undefined} [vote_end = undefined] vote_end
+ * @param {string} bcc
  * @return {Promise<void>}
  */
-const sendEmail = async (gmail, event, templatePath, from, to, vote_end) => {
+const sendEmail = async (gmail, event, templatePath, to, vote_end, bcc) => {
   const emailTemplate = fs.readFileSync(templatePath, {
     encoding: "utf-8",
   });
 
   const email1 = await ejs.render(emailTemplate, {
-    send_from: from,
     send_to: to,
     date: event.start.dateTime.split("T")[0],
     from: isoDateToHour(event.start.dateTime),
@@ -225,6 +234,8 @@ const sendEmail = async (gmail, event, templatePath, from, to, vote_end) => {
     day_of_week: new Date(event.start.dateTime).toLocaleDateString("hu-HU", {
       weekday: "long",
     }),
+    players: event.attendees.map((attendee) => attendee.email).join("<br>"),
+    send_bcc: bcc,
     vote_end: vote_end,
   });
 
