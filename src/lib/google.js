@@ -120,16 +120,10 @@ export const getEventById = async (calendar, eventId) => {
  * @param {calendar_v3.Schema$Event} event
  * @param {gmail_v1.Gmail} gmail
  * @param {calendar_v3.Calendar} calendar
- * @param {string|undefined} [isReminder = undefined] isReminder
+ * @param {boolean} [isReminder = false] isReminder
  * @return {void}
  */
-export const processEvent = async (
-  config,
-  event,
-  gmail,
-  calendar,
-  isReminder
-) => {
+export const processEvent = async (config, event, gmail, calendar) => {
   console.log(`Event found: ${event.summary}`);
 
   if (isReminder) {
@@ -137,10 +131,6 @@ export const processEvent = async (
 
     // gmail returns time in utc instead of local time which is 2 hours behind so no decrement is needed :D
     const time = new Date(event.start.dateTime);
-
-    if (isReminder === "first") {
-      time.setHours(time.getHours() - 6);
-    }
 
     await sendEmail(
       gmail,

@@ -112,7 +112,7 @@ const runT1 = async (config) => {
  * @param {string} reminderType
  * @return {Promise<void>}
  */
-const runT2 = async (config, reminderType) => {
+const runT2 = async (config) => {
   const tokenPath = getTokenPath(config);
   const auth = await getAuth(tokenPath);
 
@@ -128,7 +128,7 @@ const runT2 = async (config, reminderType) => {
 
   const gmail = google.gmail({ version: "v1", auth });
 
-  await processEvent(config, event, gmail, reminderType);
+  await processEvent(config, event, gmail, true);
 };
 
 const main = async (args) => {
@@ -171,10 +171,7 @@ const main = async (args) => {
       await runT1(config);
       break;
     case Commands.T2:
-      await runT2(config, "second");
-      break;
-    case Commands.T8:
-      await runT2(config, "first");
+      await runT2(config);
       break;
   }
 };
