@@ -45,7 +45,7 @@ export const getEvent7DaysFromNow = async (auth) => {
   const sevenDaysFromNow = new Date(
     now.getFullYear(),
     now.getMonth(),
-    now.getDate() + 2
+    now.getDate() + 7
   );
 
   const timeMin = new Date(
