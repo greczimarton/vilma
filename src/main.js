@@ -83,7 +83,7 @@ const runEvent = async (args, config) => {
 
   const gmail = google.gmail({ version: "v1", auth });
 
-  await processEvent(config, event, gmail);
+  await processEvent(config, event, gmail, calendar);
 };
 
 const runT1 = async (config) => {

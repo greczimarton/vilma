@@ -119,10 +119,17 @@ export const getEventById = async (calendar, eventId) => {
  * @param {any} config
  * @param {calendar_v3.Schema$Event} event
  * @param {gmail_v1.Gmail} gmail
+ * @param {calendar_v3.Calendar} calendar
  * @param {string|undefined} [isReminder = undefined] isReminder
  * @return {void}
  */
-export const processEvent = async (config, event, gmail, isReminder) => {
+export const processEvent = async (
+  config,
+  event,
+  gmail,
+  calendar,
+  isReminder
+) => {
   console.log(`Event found: ${event.summary}`);
 
   if (isReminder) {
@@ -168,12 +175,16 @@ export const processEvent = async (config, event, gmail, isReminder) => {
       gmail,
       event,
       `${config.vilmaPath}/emails/cancel-players.ejs`,
-      config.testTo, //acceptedAttendees.map((attendee) => attendee.email).join(",")
+      config.testTo,
       undefined,
-      config.admin
+      config.admin //acceptedAttendees.map((attendee) => attendee.email).join(",")
     );
 
-    // törlés a naptárból notification nélkül
+    calendar.events.delete({
+      calendarId: "primary",
+      eventId: event.id,
+      sendUpdates: "none",
+    });
 
     console.log("Cancel emails sent.");
   } else {
@@ -202,9 +213,9 @@ export const processEvent = async (config, event, gmail, isReminder) => {
       gmail,
       event,
       `${config.vilmaPath}/emails/confirm.ejs`,
-      config.testTo, //acceptedAttendees.map((attendee) => attendee.email).join(",")
+      config.testTo,
       undefined,
-      config.admin
+      undefined //acceptedAttendees.map((attendee) => attendee.email).join(",")
     );
     console.log("Confirmation email sent to players.");
   }
