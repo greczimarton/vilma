@@ -1,0 +1,20 @@
+{
+  "type": "module",
+  "bin": {
+    "vilma": "./src/main.js"
+  },
+  "dependencies": {
+    "@google-cloud/local-auth": "^2.1.0",
+    "ejs": "^3.1.10",
+    "googleapis": "^105.0.0"
+  },
+  "name": "vilma",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
