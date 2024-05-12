@@ -262,8 +262,6 @@ const sendEmail = async (
     vote_end: vote_end,
   });
 
-  console.log("email", email);
-
   const base64Email = Buffer.from(email).toString("base64");
 
   try {
