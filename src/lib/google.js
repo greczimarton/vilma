@@ -146,6 +146,7 @@ export const processEvent = async (
 
     // gmail returns time in utc instead of local time which is 2 hours behind so no decrement is needed :D
     const time = new Date(event.start.dateTime);
+    time.setHours(time.getHours() + 1);
 
     const emails = [
       ...new Set(
