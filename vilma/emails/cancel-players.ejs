@@ -1,0 +1,11 @@
+To: <%= send_to %>
+Content-type: text/html;charset=utf-8
+MIME-Version: 1.0
+Subject: =?utf-8?B?<%= Buffer.from('Visszaigazolás – Esemény lemondásáról (' + date + ', ' + from + '-' + to + ')', 'utf8').toString("base64") %>?=
+
+Kedves Röplabdázó!<br>
+<br>
+A jövőhét <strong><%= day_of_week %>i (<%= date %>, <%= from %>)</strong> alkalomra nem jött össze a minimális létszám, így az alkalom <strong style="color: red;">lemondásra</strong> került.<br>
+<br>
+Üdvözlettel:<br>
+Vilma – a személyes asszisztensed

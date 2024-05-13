@@ -1,0 +1,13 @@
+{
+  "scopes": [
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/gmail.send"
+  ],
+  "vilmaPath": "/Users/greczimarton/personal/vilma-vball-2024/vilma",
+  "minimumNumberOfAttendees": 5,
+  "organizersEmail": "zsolt.bencze99@gmail.com",
+  "vilmaEmail": "volleyballassistant@gmail.com",
+  "testTo": "volleyballassistant@gmail.com",
+  "admin": "g.marci1999@gmail.com",
+  "dryRun": false
+}

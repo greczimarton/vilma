@@ -1,0 +1,8 @@
+To: <%= send_to %>
+Content-type: text/html;charset=utf-8
+MIME-Version: 1.0
+Subject: =?utf-8?B?<%= Buffer.from(date + ' ' + from + ' - ' + to + ': Játékosok', 'utf8').toString('base64') %>?=
+
+<% players.forEach(function(item) { %>
+  <%= item %><br>
+<% }); %>

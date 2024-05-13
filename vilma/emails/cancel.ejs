@@ -1,0 +1,14 @@
+To: <%= send_to %>
+Bcc: <%= send_bcc %>
+Content-type: text/html;charset=utf-8
+MIME-Version: 1.0
+Subject: =?utf-8?B?<%= Buffer.from('Alkalom lemondása (' + date + ', ' + from + '-' + to + ')', 'utf8').toString("base64") %>?=
+
+Kedves Alexandra,<br>
+<br>
+A jövőhét <strong style="color: red;"><%= day_of_week %>i (<%= date %>, <%= from %>)</strong> alkalmat le szeretném mondani létszámhiány miatt.<br>
+<br>
+Köszönöm.<br>
+<br>
+Üdvözlettel:<br>
+Bencze Zsolt
