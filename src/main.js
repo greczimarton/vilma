@@ -144,8 +144,7 @@ const main = async (args) => {
 
   try {
     const configPath = path.join(os.homedir(), ".config/vilma/config.json");
-    // const configPath =
-    //   "/Users/greczimarton/personal/vilma-vball-2024/vilma/config.json";
+
     config = JSON.parse(
       fs.readFileSync(configPath, {
         encoding: "utf-8",

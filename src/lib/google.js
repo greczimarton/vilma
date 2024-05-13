@@ -190,13 +190,23 @@ export const processEvent = async (
     );
     console.log("Cancel email sent to BME.");
 
+    const emails = [
+      ...new Set(
+        config.dryRun
+          ? [config.admin]
+          : [...acceptedAttendeesEmail, config.admin]
+      ),
+    ];
+
+    console.log("Sending cancel emails to players...", emails);
+
     await sendEmail(
       gmail,
       event,
       `${config.vilmaPath}/emails/cancel-players.ejs`,
-      config.testTo,
+      config.vilmaEmail,
       undefined,
-      config.dryRun ? config.admin : [...acceptedAttendeesEmail, config.admin],
+      config.dryRun ? config.admin : emails,
       undefined
     );
 
@@ -280,15 +290,17 @@ const sendEmail = async (
     vote_end: vote_end,
   });
 
+  console.log(email);
+
   const base64Email = Buffer.from(email).toString("base64");
 
   try {
-    await gmail.users.messages.send({
-      userId: "me",
-      requestBody: {
-        raw: base64Email,
-      },
-    });
+    // await gmail.users.messages.send({
+    //   userId: "me",
+    //   requestBody: {
+    //     raw: base64Email,
+    //   },
+    // });
     console.log("Email sent.");
   } catch (err) {
     console.error("Error sending email: ", err);
