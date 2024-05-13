@@ -138,13 +138,22 @@ export const processEvent = async (
     const awaitingResponseAttendeesEmail = event.attendees
       .filter(
         (attendee) =>
-          attendee.responseStatus === "needsAction" ||
-          attendee.responseStatus === "tentative"
+          attendee.email !== config.vilmaEmail &&
+          (attendee.responseStatus === "needsAction" ||
+            attendee.responseStatus === "tentative")
       )
       .map((attendee) => attendee.email);
 
     // gmail returns time in utc instead of local time which is 2 hours behind so no decrement is needed :D
     const time = new Date(event.start.dateTime);
+
+    const emails = [
+      ...new Set(
+        config.dryRun
+          ? [config.admin]
+          : [...awaitingResponseAttendeesEmail, config.admin]
+      ),
+    ];
 
     await sendEmail(
       gmail,
@@ -152,12 +161,9 @@ export const processEvent = async (
       `${config.vilmaPath}/emails/reminder.ejs`,
       config.testTo,
       isoDateToHour(time.toISOString()),
-      config.dryRun
-        ? config.testTo
-        : [...awaitingResponseAttendeesEmail, config.admin],
+      config.dryRun ? config.admin : emails,
       undefined
     );
-
     return;
   }
 

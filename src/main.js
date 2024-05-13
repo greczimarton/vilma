@@ -18,7 +18,8 @@ import fs from "fs";
  */
 const Commands = {
   Auth: "auth",
-  Test: "test",
+  TestT1: "test1",
+  TestT2: "test2",
   Event: "event",
   T1: "t-1",
   T2: "t-2",
@@ -57,7 +58,7 @@ const runTest = async (config) => {
   await testCalendarAccess(calendar);
 };
 
-const runEvent = async (args, config) => {
+const runEvent = async (args, config, isReminder) => {
   if (args.length < 4) {
     console.error("Please provide an event ID. vilma event <event-id>");
     return;
@@ -83,7 +84,7 @@ const runEvent = async (args, config) => {
 
   const gmail = google.gmail({ version: "v1", auth });
 
-  await processEvent(config, event, gmail, calendar);
+  await processEvent(config, event, gmail, calendar, isReminder);
 };
 
 const runT1 = async (config) => {
@@ -170,8 +171,14 @@ const main = async (args) => {
     case Commands.T1:
       await runT1(config);
       break;
+    case Commands.TestT1:
+      await runEvent(args, config, false);
+      break;
     case Commands.T2:
       await runT2(config);
+      break;
+    case Commands.TestT2:
+      await runEvent(args, config, true);
       break;
   }
 };
