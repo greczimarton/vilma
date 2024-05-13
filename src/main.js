@@ -18,12 +18,11 @@ import fs from "fs";
  */
 const Commands = {
   Auth: "auth",
-  TestT1: "test1",
-  TestT2: "test2",
-  Event: "event",
+  Test: "test",
+  EventT1: "event-t1",
+  EventT2: "event-t2",
   T1: "t-1",
   T2: "t-2",
-  T8: "t-8",
 };
 
 const printHelp = () => {
@@ -34,9 +33,10 @@ Usage: vilma [${Object.values(Commands).join(" or ")}]
 
 auth: Get credential tokens (you need to run this first and only once)
 test: Test the credentials
+event-t1: <event-id>: Run event t-1 task
+event-t2: <event-id>: Run event t-2 task
 t-1: Run t-1 task
 t-2: Run t-2 task
-t-8: Run t-8 task
     `
   );
 };
@@ -164,19 +164,16 @@ const main = async (args) => {
     case Commands.Test:
       await runTest(config);
       break;
-    case Commands.Event:
-      await runEvent(args, config);
-      break;
     case Commands.T1:
       await runT1(config);
       break;
-    case Commands.TestT1:
+    case Commands.EventT1:
       await runEvent(args, config, false);
       break;
     case Commands.T2:
       await runT2(config);
       break;
-    case Commands.TestT2:
+    case Commands.EventT2:
       await runEvent(args, config, true);
       break;
   }

@@ -295,12 +295,12 @@ const sendEmail = async (
   const base64Email = Buffer.from(email).toString("base64");
 
   try {
-    // await gmail.users.messages.send({
-    //   userId: "me",
-    //   requestBody: {
-    //     raw: base64Email,
-    //   },
-    // });
+    await gmail.users.messages.send({
+      userId: "me",
+      requestBody: {
+        raw: base64Email,
+      },
+    });
     console.log("Email sent.");
   } catch (err) {
     console.error("Error sending email: ", err);
