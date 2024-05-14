@@ -274,6 +274,8 @@ const sendEmail = async (
   bcc,
   players
 ) => {
+  console.log(event);
+
   const emailTemplate = fs.readFileSync(templatePath, {
     encoding: "utf-8",
   });
@@ -289,6 +291,7 @@ const sendEmail = async (
     players: players,
     send_bcc: bcc,
     vote_end: vote_end,
+    link: event.htmlLink,
   });
 
   console.log(email);
